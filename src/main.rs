@@ -107,6 +107,7 @@ fn chunk(stack_a: &mut LinkedList<i32>, min: i32, max: i32) -> (LinkedList<i32>,
         let num = *current;
 
         let min_element = *stack_a.iter().min().unwrap();
+
         if max < min_element {
             min = min_element;
             max = min + diff;
@@ -122,8 +123,19 @@ fn chunk(stack_a: &mut LinkedList<i32>, min: i32, max: i32) -> (LinkedList<i32>,
             min += 1;
             max += 1;
         } else {
-            moves.push(Moves::Ra);
-            rotate(stack_a);
+            if stack_a.len() > 2 {
+                let (index, _) = get_min_element(&stack_a);
+                if index < stack_a.len() / 2 {
+                    moves.push(Moves::Ra);
+                    rotate(stack_a);
+                } else {
+                    moves.push(Moves::Rra);
+                    reverse_rotate(stack_a);
+                }
+            } else {
+                moves.push(Moves::Pb);
+                push(stack_a, &mut stack_b);
+            }
         }
     }
     (stack_b, moves)
@@ -134,6 +146,18 @@ fn get_max_element(val: &LinkedList<i32>) -> (usize, i32) {
         .iter()
         .enumerate()
         .max_by(|x, y| {
+            let ((_, x), (_, y)) = (x, y);
+            x.cmp(&y)
+        })
+        .unwrap();
+    (index, *value)
+}
+
+fn get_min_element(val: &LinkedList<i32>) -> (usize, i32) {
+    let (index, value) = val
+        .iter()
+        .enumerate()
+        .min_by(|x, y| {
             let ((_, x), (_, y)) = (x, y);
             x.cmp(&y)
         })
@@ -188,10 +212,12 @@ fn main() {
 
     let max = get_the_interval(stack_a.len());
     let (stack_b, mut moves) = chunk(&mut stack_a, 0, max);
-    dbg!(moves.len());
+    // dbg!(&stack_b);
+    // moves.iter().for_each(|s| println!("{}", s));
+    // dbg!(moves.len());
     moves.append(&mut sort(stack_b));
-    dbg!(moves.len());
-    // moves.iter().for_each(|s| println!("{}", s.to_string()));
+    // dbg!(moves.len());
+    moves.iter().for_each(|s| println!("{}", s));
 }
 
 #[cfg(test)]
