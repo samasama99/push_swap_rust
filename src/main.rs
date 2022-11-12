@@ -11,7 +11,7 @@ use std::{
 
 use checker::start_checker;
 
-use crate::stack_moves::stack_moves::*;
+use crate::stack_moves::stack_moves_mod::*;
 
 fn parse_args(args: &[String]) -> Option<LinkedList<i32>> {
     let args = args.iter().flat_map(|el| el.split_whitespace());
@@ -57,22 +57,20 @@ fn chunk(stack_a: &mut LinkedList<i32>, min: i32, max: i32) -> (LinkedList<i32>,
             }
             min += 1;
             max += 1;
-        } else {
-            if stack_a.len() > 2 {
-                let (index, _) = get_min_element(&stack_a);
-                if index < stack_a.len() / 2 {
-                    moves.push(Moves::Ra);
-                    rotate(stack_a).expect("not enough elements in stack to rotate A");
-                } else {
-                    moves.push(Moves::Rra);
-                    reverse_rotate(stack_a)
-                        .expect("not enough elements in stack to reverse rotate A");
-                }
+        } else if stack_a.len() > 2 {
+            let (index, _) = get_min_element(stack_a);
+            if index < stack_a.len() / 2 {
+                moves.push(Moves::Ra);
+                rotate(stack_a).expect("not enough elements in stack to rotate A");
             } else {
-                moves.push(Moves::Pb);
-                push(stack_a, &mut stack_b)
-                    .expect("not enough elements in stack to push from A to B");
+                moves.push(Moves::Rra);
+                reverse_rotate(stack_a)
+                    .expect("not enough elements in stack to reverse rotate A");
             }
+        } else {
+            moves.push(Moves::Pb);
+            push(stack_a, &mut stack_b)
+                .expect("not enough elements in stack to push from A to B");
         }
     }
     (stack_b, moves)
@@ -84,7 +82,7 @@ fn get_max_element(val: &LinkedList<i32>) -> (usize, i32) {
         .enumerate()
         .max_by(|x, y| {
             let ((_, x), (_, y)) = (x, y);
-            x.cmp(&y)
+            x.cmp(y)
         })
         .unwrap();
     (index, *value)
@@ -96,7 +94,7 @@ fn get_min_element(val: &LinkedList<i32>) -> (usize, i32) {
         .enumerate()
         .min_by(|x, y| {
             let ((_, x), (_, y)) = (x, y);
-            x.cmp(&y)
+            x.cmp(y)
         })
         .unwrap();
     (index, *value)
@@ -105,7 +103,7 @@ fn get_min_element(val: &LinkedList<i32>) -> (usize, i32) {
 fn sort(mut stack_b: LinkedList<i32>) -> Vec<Moves> {
     let mut stack_a = LinkedList::new();
     let mut moves = Vec::new();
-    while stack_b.len() != 0 {
+    while !stack_b.is_empty() {
         let (index, _) = get_max_element(&stack_b);
         if index < stack_b.len() / 2 {
             for _ in 0..index {

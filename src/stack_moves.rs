@@ -1,7 +1,7 @@
-pub mod stack_moves {
+pub mod stack_moves_mod {
     use std::{collections::LinkedList, fmt::Display, str::FromStr};
 
-    #[derive(Debug, PartialEq)]
+    #[derive(Debug, PartialEq, Eq)]
     pub enum Moves {
         Ra,
         Rb,
@@ -58,19 +58,22 @@ pub mod stack_moves {
     #[must_use]
     pub fn rotate(stack: &mut LinkedList<i32>) -> Option<()> {
         let num = stack.pop_front()?;
-        Some(stack.push_back(num))
+        stack.push_back(num);
+        Some(())
     }
 
     #[must_use]
     pub fn reverse_rotate(stack: &mut LinkedList<i32>) -> Option<()> {
         let num = stack.pop_back()?;
-        Some(stack.push_front(num))
+        stack.push_front(num);
+        Some(())
     }
 
     #[must_use]
     pub fn push(stack1: &mut LinkedList<i32>, stack2: &mut LinkedList<i32>) -> Option<()> {
         let num = stack1.pop_front()?;
-        Some(stack2.push_front(num))
+        stack2.push_front(num);
+        Some(())
     }
 
     #[must_use]
