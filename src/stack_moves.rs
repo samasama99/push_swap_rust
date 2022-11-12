@@ -1,6 +1,7 @@
 pub mod stack_moves {
-    use std::{collections::LinkedList, fmt::Display};
+    use std::{collections::LinkedList, fmt::Display, str::FromStr};
 
+    #[derive(Debug, PartialEq)]
     pub enum Moves {
         Ra,
         Rb,
@@ -29,6 +30,27 @@ pub mod stack_moves {
                 Moves::Rrb => write!(f, "rrb"),
                 Moves::Pa => write!(f, "pa"),
                 Moves::Pb => write!(f, "pb"),
+            }
+        }
+    }
+
+    impl FromStr for Moves {
+        type Err = String;
+
+        fn from_str(input: &str) -> Result<Moves, Self::Err> {
+            match input {
+                "ra" => Ok(Moves::Ra),
+                "rb" => Ok(Moves::Rb),
+                "raa" => Ok(Moves::Rra),
+                "rrb" => Ok(Moves::Rrb),
+                "pa" => Ok(Moves::Pa),
+                "pb" => Ok(Moves::Pb),
+                "sa" => Ok(Moves::Sa),
+                "sb" => Ok(Moves::Sb),
+                "rr" => Ok(Moves::Rr),
+                "rrr" => Ok(Moves::Rrr),
+                "ss" => Ok(Moves::Ss),
+                _ => Err("not a move".to_string()),
             }
         }
     }

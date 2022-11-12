@@ -1,12 +1,15 @@
 // #![allow(unused)]
 
 mod stack_moves;
+mod checker;
 
 use std::{
     collections::{HashSet, LinkedList},
     env::args,
     process,
 };
+
+use checker::start_checker;
 
 use crate::stack_moves::stack_moves::*;
 
@@ -132,6 +135,15 @@ fn get_max_of_interval(size: usize) -> i32 {
 
 fn main() {
     let args: Vec<String> = args().collect();
+
+    if args.len() < 2 {
+        return;
+    }
+
+    if args[1] == "checker" && args.len() >= 3 {
+        start_checker(&args[2..]);
+        return;
+    } 
 
     let (_, elements) = args.split_first().unwrap();
 
